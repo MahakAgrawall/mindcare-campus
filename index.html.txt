@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MindCare Campus - Digital Psychological Intervention System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        
+        .chat-message {
+            animation: fadeInUp 0.3s ease;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .pulse-dot {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.5;
+            }
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+        }
+        
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .progress-bar {
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-sm border-b">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <h1 class="text-2xl font-bold text-indigo-600">🧠 MindCare Campus</h1>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button onclick="showSection('dashboard')" class="nav-btn text-gray-700 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium">Dashboard</button>
+                    <button onclick="showSection('chat')" class="nav-btn text-gray-700 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium">AI Support</button>
+                    <button onclick="showSection('booking')" class="nav-btn text-gray-700 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium">Book Session</button>
+                    <button onclick="showSection('resources')" class="nav-btn text-gray-700 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium">Resources</button>
+                    <button onclick="showSection('peer-support')" class="nav-btn text-gray-700 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium">Peer Support</button>
+                    <button onclick="showSection('admin')" class="nav-btn text-gray-700 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium">Admin</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        
+        <!-- Dashboard Section -->
+        <div id="dashboard" class="section">
+            <!-- Hero Section -->
+            <div class="gradient-bg rounded-2xl p-8 mb-8 text-white">
+                <div class="max-w-3xl">
+                    <h2 class="text-4xl font-bold mb-4">Your Mental Wellness Journey Starts Here</h2>
+                    <p class="text-xl mb-6 opacity-90">Confidential, culturally-sensitive support designed specifically for college students. Available 24/7 in your preferred language.</p>
+                    <div class="flex flex-wrap gap-4">
+                        <button onclick="showSection('chat')" class="bg-white text-indigo-600 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition">Start AI Chat</button>
+                        <button onclick="showSection('booking')" class="border-2 border-white text-white px-6 py-3 rounded-lg font-semibold hover:bg-white hover:text-indigo-600 transition">Book Counselor</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Stats -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                <div class="bg-white p-6 rounded-xl shadow-sm">
+                    <div class="flex items-center">
+                        <div class="p-3 bg-green-100 rounded-lg">
+                            <span class="text-2xl">😊</span>
+                        </div>
+                        <div class="ml-4">
+                            <p class="text-sm text-gray-600">Mood Today</p>
+                            <p class="text-xl font-semibold text-gray-900">Good</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-sm">
+                    <div class="flex items-center">
+                        <div class="p-3 bg-blue-100 rounded-lg">
+                            <span class="text-2xl">💬</span>
+                        </div>
+                        <div class="ml-4">
+                            <p class="text-sm text-gray-600">AI Chats</p>
+                            <p class="text-xl font-semibold text-gray-900">12</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-sm">
+                    <div class="flex items-center">
+                        <div class="p-3 bg-purple-100 rounded-lg">
+                            <span class="text-2xl">📚</span>
+                        </div>
+                        <div class="ml-4">
+                            <p class="text-sm text-gray-600">Resources Used</p>
+                            <p class="text-xl font-semibold text-gray-900">8</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-sm">
+                    <div class="flex items-center">
+                        <div class="p-3 bg-yellow-100 rounded-lg">
+                            <span class="text-2xl">🤝</span>
+                        </div>
+                        <div class="ml-4">
+                            <p class="text-sm text-gray-600">Peer Connections</p>
+                            <p class="text-xl font-semibold text-gray-900">3</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-white p-6 rounded-xl shadow-sm card-hover cursor-pointer" onclick="showSection('chat')">
+                    <div class="text-center">
+                        <div class="text-4xl mb-4">🤖</div>
+                        <h3 class="text-xl font-semibold mb-2">AI First-Aid Support</h3>
+                        <p class="text-gray-600 mb-4">Get immediate coping strategies and guidance from our AI counselor</p>
+                        <span class="text-indigo-600 font-medium">Start Chat →</span>
+                    </div>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-sm card-hover cursor-pointer" onclick="showSection('booking')">
+                    <div class="text-center">
+                        <div class="text-4xl mb-4">👨‍⚕️</div>
+                        <h3 class="text-xl font-semibold mb-2">Professional Counseling</h3>
+                        <p class="text-gray-600 mb-4">Book confidential sessions with certified counselors</p>
+                        <span class="text-indigo-600 font-medium">Book Now →</span>
+                    </div>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-sm card-hover cursor-pointer" onclick="showSection('peer-support')">
+                    <div class="text-center">
+                        <div class="text-4xl mb-4">👥</div>
+                        <h3 class="text-xl font-semibold mb-2">Peer Support</h3>
+                        <p class="text-gray-600 mb-4">Connect with fellow students in moderated support groups</p>
+                        <span class="text-indigo-600 font-medium">Join Community →</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- AI Chat Section -->
+        <div id="chat" class="section hidden">
+            <div class="bg-white rounded-xl shadow-sm">
+                <div class="p-6 border-b">
+                    <h2 class="text-2xl font-bold text-gray-900">AI Mental Health Support</h2>
+                    <p class="text-gray-600 mt-2">Confidential chat with our AI counselor trained in evidence-based therapeutic techniques</p>
+                </div>
+                <div class="p-6">
+                    <div id="chatMessages" class="h-96 overflow-y-auto mb-4 p-4 bg-gray-50 rounded-lg">
+                        <div class="chat-message mb-4">
+                            <div class="flex items-start">
+                                <div class="bg-indigo-600 text-white p-2 rounded-full mr-3">🤖</div>
+                                <div class="bg-white p-3 rounded-lg shadow-sm max-w-md">
+                                    <p>Hello! I'm here to provide you with mental health support. Everything we discuss is completely confidential. How are you feeling today?</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex gap-3">
+                        <input type="text" id="chatInput" placeholder="Type your message here..." class="flex-1 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                        <button onclick="sendMessage()" class="bg-indigo-600 text-white px-6 py-3 rounded-lg hover:bg-indigo-700 transition">Send</button>
+                    </div>
+                    <div class="mt-4 flex flex-wrap gap-2">
+                        <button onclick="quickMessage('I feel anxious')" class="bg-gray-100 text-gray-700 px-3 py-2 rounded-full text-sm hover:bg-gray-200 transition">I feel anxious</button>
+                        <button onclick="quickMessage('I am stressed about exams')" class="bg-gray-100 text-gray-700 px-3 py-2 rounded-full text-sm hover:bg-gray-200 transition">Exam stress</button>
+                        <button onclick="quickMessage('I feel lonely')" class="bg-gray-100 text-gray-700 px-3 py-2 rounded-full text-sm hover:bg-gray-200 transition">Feeling lonely</button>
+                        <button onclick="quickMessage('Sleep problems')" class="bg-gray-100 text-gray-700 px-3 py-2 rounded-full text-sm hover:bg-gray-200 transition">Sleep issues</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Booking Section -->
+        <div id="booking" class="section hidden">
+            <div class="bg-white rounded-xl shadow-sm">
+                <div class="p-6 border-b">
+                    <h2 class="text-2xl font-bold text-gray-900">Book Counseling Session</h2>
+                    <p class="text-gray-600 mt-2">Schedule a confidential session with our certified mental health professionals</p>
+                </div>
+                <div class="p-6">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <!-- Booking Form -->
+                        <div>
+                            <form id="bookingForm" class="space-y-6">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Preferred Counselor</label>
+                                    <select class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500">
+                                        <option>Dr. Sarah Johnson - Clinical Psychologist</option>
+                                        <option>Dr. Raj Patel - Counseling Psychologist</option>
+                                        <option>Ms. Priya Sharma - Licensed Therapist</option>
+                                        <option>Any Available Counselor</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Session Type</label>
+                                    <select class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500">
+                                        <option>Individual Counseling (50 min)</option>
+                                        <option>Crisis Intervention (30 min)</option>
+                                        <option>Group Therapy Session</option>
+                                        <option>Academic Stress Counseling</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Preferred Date</label>
+                                    <input type="date" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Preferred Time</label>
+                                    <select class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500">
+                                        <option>9:00 AM - 10:00 AM</option>
+                                        <option>10:00 AM - 11:00 AM</option>
+                                        <option>11:00 AM - 12:00 PM</option>
+                                        <option>2:00 PM - 3:00 PM</option>
+                                        <option>3:00 PM - 4:00 PM</option>
+                                        <option>4:00 PM - 5:00 PM</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Brief Description (Optional)</label>
+                                    <textarea rows="3" placeholder="What would you like to discuss? This helps us prepare better for your session." class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"></textarea>
+                                </div>
+                                <button type="submit" class="w-full bg-indigo-600 text-white py-3 rounded-lg font-semibold hover:bg-indigo-700 transition">Book Session</button>
+                            </form>
+                        </div>
+                        
+                        <!-- Available Counselors -->
+                        <div>
+                            <h3 class="text-lg font-semibold mb-4">Available Counselors</h3>
+                            <div class="space-y-4">
+                                <div class="border border-gray-200 rounded-lg p-4">
+                                    <div class="flex items-center mb-2">
+                                        <div class="w-12 h-12 bg-indigo-100 rounded-full flex items-center justify-center mr-3">
+                                            <span class="text-indigo-600 font-semibold">SJ</span>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-semibold">Dr. Sarah Johnson</h4>
+                                            <p class="text-sm text-gray-600">Clinical Psychologist</p>
+                                        </div>
+                                        <div class="ml-auto">
+                                            <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                                <span class="w-2 h-2 bg-green-400 rounded-full mr-1 pulse-dot"></span>
+                                                Available
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <p class="text-sm text-gray-600">Specializes in anxiety, depression, and academic stress. 8+ years experience.</p>
+                                </div>
+                                
+                                <div class="border border-gray-200 rounded-lg p-4">
+                                    <div class="flex items-center mb-2">
+                                        <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mr-3">
+                                            <span class="text-purple-600 font-semibold">RP</span>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-semibold">Dr. Raj Patel</h4>
+                                            <p class="text-sm text-gray-600">Counseling Psychologist</p>
+                                        </div>
+                                        <div class="ml-auto">
+                                            <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                                                Busy until 3 PM
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <p class="text-sm text-gray-600">Expert in relationship issues, social anxiety, and cultural adaptation challenges.</p>
+                                </div>
+                                
+                                <div class="border border-gray-200 rounded-lg p-4">
+                                    <div class="flex items-center mb-2">
+                                        <div class="w-12 h-12 bg-pink-100 rounded-full flex items-center justify-center mr-3">
+                                            <span class="text-pink-600 font-semibold">PS</span>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-semibold">Ms. Priya Sharma</h4>
+                                            <p class="text-sm text-gray-600">Licensed Therapist</p>
+                                        </div>
+                                        <div class="ml-auto">
+                                            <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                                <span class="w-2 h-2 bg-green-400 rounded-full mr-1 pulse-dot"></span>
+                                                Available
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <p class="text-sm text-gray-600">Specializes in trauma, PTSD, and mindfulness-based therapy approaches.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Resources Section -->
+        <div id="resources" class="section hidden">
+            <div class="mb-8">
+                <h2 class="text-3xl font-bold text-gray-900 mb-4">Mental Health Resources</h2>
+                <p class="text-gray-600">Comprehensive collection of educational materials, guided exercises, and wellness tools</p>
+            </div>
+            
+            <!-- Resource Categories -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                <div class="bg-white p-6 rounded-xl shadow-sm card-hover cursor-pointer" onclick="showResourceCategory('videos')">
+                    <div class="text-center">
+                        <div class="text-4xl mb-4">🎥</div>
+                        <h3 class="text-xl font-semibold mb-2">Educational Videos</h3>
+                        <p class="text-gray-600">Expert-led sessions on mental health topics</p>
+                    </div>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-sm card-hover cursor-pointer" onclick="showResourceCategory('audio')">
+                    <div class="text-center">
+                        <div class="text-4xl mb-4">🎧</div>
+                        <h3 class="text-xl font-semibold mb-2">Relaxation Audio</h3>
+                        <p class="text-gray-600">Guided meditation and breathing exercises</p>
+                    </div>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-sm card-hover cursor-pointer" onclick="showResourceCategory('guides')">
+                    <div class="text-center">
+                        <div class="text-4xl mb-4">📚</div>
+                        <h3 class="text-xl font-semibold mb-2">Wellness Guides</h3>
+                        <p class="text-gray-600">Comprehensive guides in multiple languages</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Resource Content -->
+            <div id="resourceContent" class="bg-white rounded-xl shadow-sm p-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="border border-gray-200 rounded-lg p-4">
+                        <div class="aspect-video bg-gray-100 rounded-lg mb-4 flex items-center justify-center">
+                            <span class="text-4xl">▶️</span>
+                        </div>
+                        <h4 class="font-semibold mb-2">Managing Exam Anxiety</h4>
+                        <p class="text-sm text-gray-600 mb-3">Learn effective techniques to cope with pre-exam stress and anxiety</p>
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs text-gray-500">15 min</span>
+                            <button class="text-indigo-600 text-sm font-medium hover:text-indigo-700">Watch Now</button>
+                        </div>
+                    </div>
+                    
+                    <div class="border border-gray-200 rounded-lg p-4">
+                        <div class="aspect-video bg-gray-100 rounded-lg mb-4 flex items-center justify-center">
+                            <span class="text-4xl">🎵</span>
+                        </div>
+                        <h4 class="font-semibold mb-2">Deep Breathing Exercise</h4>
+                        <p class="text-sm text-gray-600 mb-3">5-minute guided breathing session for instant stress relief</p>
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs text-gray-500">5 min</span>
+                            <button class="text-indigo-600 text-sm font-medium hover:text-indigo-700">Listen Now</button>
+                        </div>
+                    </div>
+                    
+                    <div class="border border-gray-200 rounded-lg p-4">
+                        <div class="aspect-video bg-gray-100 rounded-lg mb-4 flex items-center justify-center">
+                            <span class="text-4xl">📖</span>
+                        </div>
+                        <h4 class="font-semibold mb-2">Sleep Hygiene Guide</h4>
+                        <p class="text-sm text-gray-600 mb-3">Complete guide to improving sleep quality and establishing healthy routines</p>
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs text-gray-500">PDF</span>
+                            <button class="text-indigo-600 text-sm font-medium hover:text-indigo-700">Download</button>
+                        </div>
+                    </div>
+                    
+                    <div class="border border-gray-200 rounded-lg p-4">
+                        <div class="aspect-video bg-gray-100 rounded-lg mb-4 flex items-center justify-center">
+                            <span class="text-4xl">▶️</span>
+                        </div>
+                        <h4 class="font-semibold mb-2">Building Resilience</h4>
+                        <p class="text-sm text-gray-600 mb-3">Strategies to develop emotional resilience and bounce back from setbacks</p>
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs text-gray-500">20 min</span>
+                            <button class="text-indigo-600 text-sm font-medium hover:text-indigo-700">Watch Now</button>
+                        </div>
+                    </div>
+                    
+                    <div class="border border-gray-200 rounded-lg p-4">
+                        <div class="aspect-video bg-gray-100 rounded-lg mb-4 flex items-center justify-center">
+                            <span class="text-4xl">🎵</span>
+                        </div>
+                        <h4 class="font-semibold mb-2">Mindfulness Meditation</h4>
+                        <p class="text-sm text-gray-600 mb-3">10-minute guided mindfulness session for mental clarity</p>
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs text-gray-500">10 min</span>
+                            <button class="text-indigo-600 text-sm font-medium hover:text-indigo-700">Listen Now</button>
+                        </div>
+                    </div>
+                    
+                    <div class="border border-gray-200 rounded-lg p-4">
+                        <div class="aspect-video bg-gray-100 rounded-lg mb-4 flex items-center justify-center">
+                            <span class="text-4xl">📖</span>
+                        </div>
+                        <h4 class="font-semibold mb-2">Depression Awareness (Hindi)</h4>
+                        <p class="text-sm text-gray-600 mb-3">Understanding depression symptoms and seeking help - Available in Hindi</p>
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs text-gray-500">PDF</span>
+                            <button class="text-indigo-600 text-sm font-medium hover:text-indigo-700">Download</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Peer Support Section -->
+        <div id="peer-support" class="section hidden">
+            <div class="mb-8">
+                <h2 class="text-3xl font-bold text-gray-900 mb-4">Peer Support Community</h2>
+                <p class="text-gray-600">Connect with fellow students in moderated, safe support groups</p>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Support Groups -->
+                <div class="lg:col-span-2">
+                    <div class="bg-white rounded-xl shadow-sm">
+                        <div class="p-6 border-b">
+                            <h3 class="text-xl font-semibold">Active Support Groups</h3>
+                        </div>
+                        <div class="p-6 space-y-4">
+                            <div class="border border-gray-200 rounded-lg p-4">
+                                <div class="flex items-center justify-between mb-3">
+                                    <h4 class="font-semibold">Exam Stress Support</h4>
+                                    <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">12 active</span>
+                                </div>
+                                <p class="text-sm text-gray-600 mb-3">Share strategies and support each other through exam periods</p>
+                                <div class="flex items-center justify-between">
+                                    <div class="flex -space-x-2">
+                                        <div class="w-8 h-8 bg-blue-500 rounded-full border-2 border-white"></div>
+                                        <div class="w-8 h-8 bg-green-500 rounded-full border-2 border-white"></div>
+                                        <div class="w-8 h-8 bg-purple-500 rounded-full border-2 border-white"></div>
+                                        <div class="w-8 h-8 bg-gray-300 rounded-full border-2 border-white flex items-center justify-center text-xs">+9</div>
+                                    </div>
+                                    <button class="bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-indigo-700 transition">Join Group</button>
+                                </div>
+                            </div>
+                            
+                            <div class="border border-gray-200 rounded-lg p-4">
+                                <div class="flex items-center justify-between mb-3">
+                                    <h4 class="font-semibold">Social Anxiety Circle</h4>
+                                    <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">8 active</span>
+                                </div>
+                                <p class="text-sm text-gray-600 mb-3">Safe space for those dealing with social anxiety and building confidence</p>
+                                <div class="flex items-center justify-between">
+                                    <div class="flex -space-x-2">
+                                        <div class="w-8 h-8 bg-pink-500 rounded-full border-2 border-white"></div>
+                                        <div class="w-8 h-8 bg-yellow-500 rounded-full border-2 border-white"></div>
+                                        <div class="w-8 h-8 bg-red-500 rounded-full border-2 border-white"></div>
+                                        <div class="w-8 h-8 bg-gray-300 rounded-full border-2 border-white flex items-center justify-center text-xs">+5</div>
+                                    </div>
+                                    <button class="bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-indigo-700 transition">Join Group</button>
+                                </div>
+                            </div>
+                            
+                            <div class="border border-gray-200 rounded-lg p-4">
+                                <div class="flex items-center justify-between mb-3">
+                                    <h4 class="font-semibold">First Year Adjustment</h4>
+                                    <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">15 active</span>
+                                </div>
+                                <p class="text-sm text-gray-600 mb-3">Support for new students adjusting to college life</p>
+                                <div class="flex items-center justify-between">
+                                    <div class="flex -space-x-2">
+                                        <div class="w-8 h-8 bg-indigo-500 rounded-full border-2 border-white"></div>
+                                        <div class="w-8 h-8 bg-teal-500 rounded-full border-2 border-white"></div>
+                                        <div class="w-8 h-8 bg-orange-500 rounded-full border-2 border-white"></div>
+                                        <div class="w-8 h-8 bg-gray-300 rounded-full border-2 border-white flex items-center justify-center text-xs">+12</div>
+                                    </div>
+                                    <button class="bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-indigo-700 transition">Join Group</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Peer Volunteers -->
+                <div>
+                    <div class="bg-white rounded-xl shadow-sm">
+                        <div class="p-6 border-b">
+                            <h3 class="text-xl font-semibold">Peer Volunteers</h3>
+                        </div>
+                        <div class="p-6 space-y-4">
+                            <div class="flex items-center">
+                                <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mr-3">
+                                    <span class="text-blue-600 font-semibold">AK</span>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold">Arjun Kumar</h4>
+                                    <p class="text-sm text-gray-600">Psychology Major, 3rd Year</p>
+                                    <div class="flex items-center mt-1">
+                                        <span class="w-2 h-2 bg-green-400 rounded-full mr-2 pulse-dot"></span>
+                                        <span class="text-xs text-green-600">Online</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-center">
+                                <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mr-3">
+                                    <span class="text-purple-600 font-semibold">SM</span>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold">Sneha Mehta</h4>
+                                    <p class="text-sm text-gray-600">Social Work Major, 4th Year</p>
+                                    <div class="flex items-center mt-1">
+                                        <span class="w-2 h-2 bg-green-400 rounded-full mr-2 pulse-dot"></span>
+                                        <span class="text-xs text-green-600">Online</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-center">
+                                <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mr-3">
+                                    <span class="text-green-600 font-semibold">RG</span>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold">Rahul Gupta</h4>
+                                    <p class="text-sm text-gray-600">Counseling Psychology, 2nd Year</p>
+                                    <div class="flex items-center mt-1">
+                                        <span class="w-2 h-2 bg-yellow-400 rounded-full mr-2"></span>
+                                        <span class="text-xs text-yellow-600">Away</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="mt-6 p-4 bg-blue-50 rounded-lg">
+                                <h4 class="font-semibold text-blue-900 mb-2">Become a Volunteer</h4>
+                                <p class="text-sm text-blue-700 mb-3">Help fellow students and gain valuable experience</p>
+                                <button class="w-full bg-blue-600 text-white py-2 rounded-lg text-sm hover:bg-blue-700 transition">Apply Now</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Admin Dashboard Section -->
+        <div id="admin" class="section hidden">
+            <div class="mb-8">
+                <h2 class="text-3xl font-bold text-gray-900 mb-4">Admin Dashboard</h2>
+                <p class="text-gray-600">Anonymous analytics and insights for institutional mental health planning</p>
+            </div>
+            
+            <!-- Key Metrics -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                <div class="bg-white p-6 rounded-xl shadow-sm">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm text-gray-600">Total Active Users</p>
+                            <p class="text-3xl font-bold text-gray-900">1,247</p>
+                            <p class="text-sm text-green-600">↑ 12% from last month</p>
+                        </div>
+                        <div class="text-3xl">👥</div>
+                    </div>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-sm">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm text-gray-600">Sessions Booked</p>
+                            <p class="text-3xl font-bold text-gray-900">89</p>
+                            <p class="text-sm text-green-600">↑ 8% from last week</p>
+                        </div>
+                        <div class="text-3xl">📅</div>
+                    </div>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-sm">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm text-gray-600">AI Chat Sessions</p>
+                            <p class="text-3xl font-bold text-gray-900">2,156</p>
+                            <p class="text-sm text-green-600">↑ 23% from last month</p>
+                        </div>
+                        <div class="text-3xl">💬</div>
+                    </div>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-sm">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm text-gray-600">Crisis Interventions</p>
+                            <p class="text-3xl font-bold text-gray-900">12</p>
+                            <p class="text-sm text-red-600">↑ 3 from last month</p>
+                        </div>
+                        <div class="text-3xl">🚨</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Mental Health Trends -->
+                <div class="bg-white rounded-xl shadow-sm">
+                    <div class="p-6 border-b">
+                        <h3 class="text-xl font-semibold">Mental Health Trends</h3>
+                    </div>
+                    <div class="p-6">
+                        <div class="space-y-4">
+                            <div>
+                                <div class="flex justify-between items-center mb-2">
+                                    <span class="text-sm font-medium">Anxiety</span>
+                                    <span class="text-sm text-gray-600">42%</span>
+                                </div>
+                                <div class="w-full bg-gray-200 rounded-full h-2">
+                                    <div class="bg-red-500 h-2 rounded-full progress-bar" style="width: 42%"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between items-center mb-2">
+                                    <span class="text-sm font-medium">Academic Stress</span>
+                                    <span class="text-sm text-gray-600">38%</span>
+                                </div>
+                                <div class="w-full bg-gray-200 rounded-full h-2">
+                                    <div class="bg-orange-500 h-2 rounded-full progress-bar" style="width: 38%"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between items-center mb-2">
+                                    <span class="text-sm font-medium">Depression</span>
+                                    <span class="text-sm text-gray-600">28%</span>
+                                </div>
+                                <div class="w-full bg-gray-200 rounded-full h-2">
+                                    <div class="bg-blue-500 h-2 rounded-full progress-bar" style="width: 28%"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between items-center mb-2">
+                                    <span class="text-sm font-medium">Sleep Issues</span>
+                                    <span class="text-sm text-gray-600">35%</span>
+                                </div>
+                                <div class="w-full bg-gray-200 rounded-full h-2">
+                                    <div class="bg-purple-500 h-2 rounded-full progress-bar" style="width: 35%"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between items-center mb-2">
+                                    <span class="text-sm font-medium">Social Isolation</span>
+                                    <span class="text-sm text-gray-600">22%</span>
+                                </div>
+                                <div class="w-full bg-gray-200 rounded-full h-2">
+                                    <div class="bg-green-500 h-2 rounded-full progress-bar" style="width: 22%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Department Usage -->
+                <div class="bg-white rounded-xl shadow-sm">
+                    <div class="p-6 border-b">
+                        <h3 class="text-xl font-semibold">Usage by Department</h3>
+                    </div>
+                    <div class="p-6">
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm font-medium">Engineering</span>
+                                <span class="text-sm text-gray-600">324 users</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm font-medium">Business</span>
+                                <span class="text-sm text-gray-600">298 users</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm font-medium">Arts & Sciences</span>
+                                <span class="text-sm text-gray-600">267 users</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm font-medium">Medicine</span>
+                                <span class="text-sm text-gray-600">189 users</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm font-medium">Law</span>
+                                <span class="text-sm text-gray-600">169 users</span>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-6 p-4 bg-yellow-50 rounded-lg">
+                            <h4 class="font-semibold text-yellow-900 mb-2">Recommendation</h4>
+                            <p class="text-sm text-yellow-700">Consider targeted outreach to Engineering and Business departments due to high stress levels.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modals -->
+    <div id="successModal" class="modal">
+        <div class="bg-white rounded-xl p-8 max-w-md mx-4">
+            <div class="text-center">
+                <div class="text-6xl mb-4">✅</div>
+                <h3 class="text-2xl font-bold text-gray-900 mb-4">Session Booked Successfully!</h3>
+                <p class="text-gray-600 mb-6">Your counseling session has been scheduled. You'll receive a confirmation email shortly.</p>
+                <button onclick="closeModal('successModal')" class="bg-indigo-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-indigo-700 transition">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global state
+        let currentSection = 'dashboard';
+        
+        // Navigation
+        function showSection(sectionId) {
+            // Hide all sections
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.add('hidden');
+            });
+            
+            // Show selected section
+            document.getElementById(sectionId).classList.remove('hidden');
+            
+            // Update navigation
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('text-indigo-600', 'bg-indigo-50');
+                btn.classList.add('text-gray-700');
+            });
+            
+            event.target.classList.remove('text-gray-700');
+            event.target.classList.add('text-indigo-600', 'bg-indigo-50');
+            
+            currentSection = sectionId;
+        }
+        
+        // Chat functionality
+        function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+            
+            if (message) {
+                addChatMessage(message, 'user');
+                input.value = '';
+                
+                // Simulate AI response
+                setTimeout(() => {
+                    const responses = [
+                        "I understand you're feeling this way. It's completely normal to experience these emotions, especially during college. Can you tell me more about what's been triggering these feelings?",
+                        "Thank you for sharing that with me. It takes courage to talk about these feelings. Let's explore some coping strategies that might help you feel better.",
+                        "Based on what you've shared, I'd recommend trying some deep breathing exercises. Would you like me to guide you through one right now?",
+                        "It sounds like you're dealing with a lot right now. Remember that seeking help is a sign of strength, not weakness. Have you considered talking to one of our counselors?",
+                        "I'm here to support you through this. Let's work together on some practical strategies to help you manage these feelings."
+                    ];
+                    
+                    const randomResponse = responses[Math.floor(Math.random() * responses.length)];
+                    addChatMessage(randomResponse, 'ai');
+                }, 1000);
+            }
+        }
+        
+        function quickMessage(message) {
+            document.getElementById('chatInput').value = message;
+            sendMessage();
+        }
+        
+        function addChatMessage(message, sender) {
+            const chatMessages = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'chat-message mb-4';
+            
+            if (sender === 'user') {
+                messageDiv.innerHTML = `
+                    <div class="flex items-start justify-end">
+                        <div class="bg-indigo-600 text-white p-3 rounded-lg shadow-sm max-w-md">
+                            <p>${message}</p>
+                        </div>
+                        <div class="bg-indigo-600 text-white p-2 rounded-full ml-3">👤</div>
+                    </div>
+                `;
+            } else {
+                messageDiv.innerHTML = `
+                    <div class="flex items-start">
+                        <div class="bg-indigo-600 text-white p-2 rounded-full mr-3">🤖</div>
+                        <div class="bg-white p-3 rounded-lg shadow-sm max-w-md">
+                            <p>${message}</p>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+        
+        // Booking form
+        document.getElementById('bookingForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            showModal('successModal');
+        });
+        
+        // Modal functions
+        function showModal(modalId) {
+            document.getElementById(modalId).classList.add('active');
+        }
+        
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+        
+        // Resource categories
+        function showResourceCategory(category) {
+            // This would filter resources by category in a real implementation
+            console.log('Showing resources for category:', category);
+        }
+        
+        // Chat input enter key
+        document.getElementById('chatInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+        
+        // Close modals when clicking outside
+        document.querySelectorAll('.modal').forEach(modal => {
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    modal.classList.remove('active');
+                }
+            });
+        });
+        
+        // Initialize with dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            showSection('dashboard');
+        });
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'97e52ea8c0f46ed0',t:'MTc1Nzc0MDY4OS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
